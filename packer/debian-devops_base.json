@@ -1,0 +1,72 @@
+{
+  "variables": {
+    "mirror": "https://repository.hybris.com/hybris/devops/debian-8.6.0-amd64-netinst.iso"
+  },
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "boot_command": [
+        "<esc><wait>",
+        "install <wait>",
+        " preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>",
+        "debian-installer=en_US.UTF-8 <wait>",
+        "auto <wait>",
+        "locale=en_US.UTF-8 <wait>",
+        "kbd-chooser/method=us <wait>",
+        "keyboard-configuration/xkb-keymap=us <wait>",
+        "netcfg/get_hostname={{ .Name }} <wait>",
+        "netcfg/get_domain=vagrantup.com <wait>",
+        "fb=false <wait>",
+        "debconf/frontend=noninteractive <wait>",
+        "console-setup/ask_detect=false <wait>",
+        "console-keymaps-at/keymap=us <wait>",
+        "<enter><wait>"
+      ],
+      "headless": true,
+      "boot_wait": "10s",
+      "disk_size": 51200,
+      "guest_os_type": "Debian_64",
+      "http_directory": "http",
+      "iso_checksum": "e9f61bf327db6d8f7cee05a99f2353cc",
+      "iso_checksum_type": "md5",
+      "iso_url": "{{user `mirror`}}",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "5000s",
+      "shutdown_command": "echo 'vagrant' | sudo -S /sbin/shutdown -hP now",
+      "guest_additions_path": "VBoxGuestAdditions_{{.Version}}.iso",
+      "virtualbox_version_file": ".vbox_version",
+      "vm_name": "debian-8-amd64",
+      "output_directory": "debian-8-amd64-virtualbox",
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--memory", "8196" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "4" ],
+        [ "modifyvm", "{{.Name}}", "--nictype1", "virtio" ],
+        [ "modifyvm", "{{.Name}}", "--nictype2", "virtio" ]
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "output": "debian-devops_base.box"
+    }
+  ],
+  "provisioners": [
+    {
+      "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+      "scripts": [
+        "scripts/set_sources.sh",
+        "scripts/base_tools.sh",
+        "scripts/setup_grub.sh",
+        "scripts/ntpdate.sh",
+        "scripts/vmtools.sh",
+        "scripts/vagrant.sh",
+        "scripts/cleanup.sh",
+        "scripts/minimize.sh"
+      ],
+      "type": "shell"
+    }
+  ]
+}
