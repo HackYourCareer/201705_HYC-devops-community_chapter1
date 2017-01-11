@@ -3,3 +3,4 @@ First part of the DevOps Community workshop
 
 Authors:
 * Artur Fijalkowski
+* Jakub Błaszczyk
