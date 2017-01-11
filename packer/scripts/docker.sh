@@ -1,4 +1,5 @@
 #!/bin/bash -eux
+export DEBIAN_FRONTEND=noninteractive 
 
 apt-key adv \
        --keyserver hkp://ha.pool.sks-keyservers.net:80 \
@@ -7,7 +8,7 @@ apt-key adv \
 echo "deb https://apt.dockerproject.org/repo debian-jessie main" | sudo tee --append /etc/apt/sources.list.d/docker.list > /dev/null
 
 apt-get update
-apt-get install apt-transport-https ca-certificates gnupg2 docker-engine
+apt-get install -y apt-transport-https ca-certificates gnupg2 docker-engine
 
 sudo usermod -aG docker vagrant
 
