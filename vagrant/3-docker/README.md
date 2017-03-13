@@ -1,4 +1,4 @@
 Build VM for docker excercises:
 
-* deploy default VM using Vagrantfile - `vagrant up`
-* log in to VM and wait
+1. deploy default VM using Vagrantfile - `vagrant up`
+2. log in to VM and wait
